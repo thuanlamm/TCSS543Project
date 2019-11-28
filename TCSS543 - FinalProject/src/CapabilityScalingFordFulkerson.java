@@ -16,17 +16,17 @@ public class CapabilityScalingFordFulkerson {
 	/** The name of the sink vertex. t by default*/
 	private String mySinkVertexName = "t";
 	/** Debug mode. */
-	private boolean myDebugMode = false; // true of false
+	private boolean myDebugMode = true; // true of false
 	
 	
 	/**
-	 * The constructor of the FordFulkerson class.
+	 * The constructor of the Capability Scaling FordFulkerson class.
 	 * 
 	 * @param theGraph the input graph that need to calculate max flow.
-	 * @throws Exception if the given graph has no Sink vertex 't'.
 	 */
 	public CapabilityScalingFordFulkerson(SimpleGraph theGraph) {
 		myGraph = theGraph;
+		addBackEdges();
 		mySinkVertexIndex = findVertexIndexByName(this.mySinkVertexName);
 		if (mySinkVertexIndex < 0) {
 			System.out.println("Cannot find the Sink vertex 't'");
@@ -51,8 +51,7 @@ public class CapabilityScalingFordFulkerson {
 				maxFlow += bottleNeckValue; // set bottleneckEdge in find path
 
 				if (this.myDebugMode) {
-					Vertex sink = (Vertex) this.myGraph.vertexList.get(mySinkVertexIndex);
-					String st = getAugmentingPath(sink);
+					String st = getAugmentingPath((Vertex) this.myGraph.vertexList.get(mySinkVertexIndex));
 					st = st + " (bottle neck = " + Double.toString(bottleNeckValue) + ") => Max flow = " + maxFlow;
 					;
 					System.out.println(st);
@@ -65,6 +64,34 @@ public class CapabilityScalingFordFulkerson {
 	}
 
 	/**
+	 * Add back edge for every edge in the graph.
+	 */
+	private void addBackEdges() {
+		LinkedList<Edge> backEdges = new LinkedList<Edge>();
+		
+        for (Iterator<?> ite = myGraph.edges(); ite.hasNext(); ) {
+            Edge edge = (Edge) ite.next();     
+            Edge newEdge = new Edge(edge.getSecondEndpoint(), edge.getFirstEndpoint(), 0.0, null);
+            backEdges.addLast(newEdge);
+        }
+        
+		for (Iterator<Edge> ite = backEdges.iterator(); ite.hasNext();) {
+			Edge edge = ite.next();
+			this.myGraph.insertEdge(edge.getFirstEndpoint(), edge.getSecondEndpoint(), 0.0, null);
+		}
+		
+		if (this.myDebugMode) {
+	        for (Iterator<?> ite = myGraph.edges(); ite.hasNext(); ) {
+	            Edge edge = (Edge) ite.next();
+	            Vertex v1 = edge.getFirstEndpoint();
+	            Vertex v2 = edge.getSecondEndpoint();
+	            double capability = (double)edge.getData();
+	            System.out.println("edge " + v1.getName() + v2.getName() + " cap = " + capability);
+	        }
+		}
+    }
+	
+	/**
 	 * Get the index of the vertex by the vertex's name.
 	 * 
 	 * @param theVertexName a string that is the name of a vertex.
@@ -72,8 +99,8 @@ public class CapabilityScalingFordFulkerson {
 	 */
 	private int findVertexIndexByName(String theVertexName) {
 		int index = 0;
-		for (Iterator<Vertex> ite = myGraph.vertices(); ite.hasNext(); index++) {
-			Vertex vertex = ite.next();
+		for (Iterator<?> ite = myGraph.vertices(); ite.hasNext(); index++) {
+			Vertex vertex = (Vertex) ite.next();
 			if (vertex.getName().toString().equals(theVertexName)) {
 				return index;
 			}
@@ -92,7 +119,7 @@ public class CapabilityScalingFordFulkerson {
 			visited[j] = false;
 
 		visited[0] = true;
-		return dfsOnGraph((Vertex)myGraph.vertexList.getFirst(), visited, theDeltaValue);
+		return dfsOnGraph((Vertex) myGraph.vertexList.getFirst(), visited, theDeltaValue);
 	}
 
 	/**
@@ -120,8 +147,8 @@ public class CapabilityScalingFordFulkerson {
 	 *         Otherwise, return -1.
 	 */
 	private int findEdgeIndex(Vertex theStartVertex, Vertex theEndVertex) {
-		for (Iterator<Edge> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
-			Edge edge = ite.next();
+		for (Iterator<?> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
+			Edge edge = (Edge) ite.next();
 			if (edge.getSecondEndpoint() == theEndVertex)
 				return myGraph.edgeList.indexOf(edge);
 		}
@@ -141,8 +168,8 @@ public class CapabilityScalingFordFulkerson {
 		if (myDebugMode)
 			System.out.println("Delta:"); 
 			
-        for (Iterator<Edge> edges = this.myGraph.incidentEdges(sourceVertex); edges.hasNext();) {
-            Edge edge = edges.next();
+        for (Iterator<?> edges = this.myGraph.incidentEdges(sourceVertex); edges.hasNext();) {
+            Edge edge = (Edge) edges.next();
 			maxCapacity = Math.max(maxCapacity, (double) edge.getData());
 			
 			if (myDebugMode)
@@ -168,8 +195,8 @@ public class CapabilityScalingFordFulkerson {
 				System.out.println(st);
 			}
 
-			for (Iterator<Edge> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
-				Edge edge = ite.next();
+			for (Iterator<?> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
+				Edge edge = (Edge) ite.next();
 				Vertex vertex = edge.getSecondEndpoint();
 
 				if (this.myDebugMode)
@@ -230,12 +257,4 @@ public class CapabilityScalingFordFulkerson {
 		}
 		return bottleNeckValue;
 	}
-
-	/**
-	 * @param mySourceVertexName the mySourceVertexName to set
-	 */
-	public void setSourceVertexName(String mySourceVertexName) {
-		this.mySourceVertexName = mySourceVertexName;
-	}
-
 }

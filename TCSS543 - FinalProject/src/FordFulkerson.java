@@ -26,9 +26,10 @@ public class FordFulkerson {
 	 */
 	public FordFulkerson(SimpleGraph theGraph) {
 		myGraph = theGraph;
+		addBackEdges();
 		mySinkVertexIndex = findVertexIndexByName(this.mySinkVertexName);
 	}
-	
+
 	/**
 	 * Set the name for the sink vertex.
 	 * @param theSourceName the new name of the source vertex.
@@ -49,15 +50,44 @@ public class FordFulkerson {
 			maxFlow += bottleNeckValue; // set bottleneckEdge in find path
 
 			if (this.myDebugMode) {
-				Vertex sink = (Vertex) this.myGraph.vertexList.get(mySinkVertexIndex);
+				Vertex sink = (Vertex)this.myGraph.vertexList.get(mySinkVertexIndex);
 				String st = getAugmentingPath(sink);
 				st = st + " (bottle neck = " + bottleNeckValue.toString() + ") => Max flow = " + maxFlow;
+				;
 				System.out.println(st);
 			}
 		}
 		return maxFlow;
 	}
 
+	/**
+	 * Add back edge for every edge in the graph.
+	 */
+	private void addBackEdges() {
+		LinkedList<Edge> backEdges = new LinkedList<Edge>();
+		
+        for (Iterator<?> ite = myGraph.edges(); ite.hasNext(); ) {
+            Edge edge = (Edge) ite.next();     
+            Edge newEdge = new Edge(edge.getSecondEndpoint(), edge.getFirstEndpoint(), 0.0, null);
+            backEdges.addLast(newEdge);
+        }
+        
+		for (Iterator<Edge> ite = backEdges.iterator(); ite.hasNext();) {
+			Edge edge = ite.next();
+			this.myGraph.insertEdge(edge.getFirstEndpoint(), edge.getSecondEndpoint(), 0.0, null);
+		}
+		
+		if (this.myDebugMode) {
+	        for (Iterator<?> ite = myGraph.edges(); ite.hasNext(); ) {
+	            Edge edge = (Edge) ite.next();
+	            Vertex v1 = edge.getFirstEndpoint();
+	            Vertex v2 = edge.getSecondEndpoint();
+	            double capability = (double)edge.getData();
+	            System.out.println("edge " + v1.getName() + v2.getName() + " cap = " + capability);
+	        }
+		}
+    }
+	
 	/**
 	 * Get the index of the vertex by the vertex's name.
 	 * 
@@ -66,8 +96,8 @@ public class FordFulkerson {
 	 */
 	private int findVertexIndexByName(String theVertexName) {
 		int index = 0;
-		for (Iterator<Vertex> ite = myGraph.vertices(); ite.hasNext(); index++) {
-			Vertex vertex = ite.next();
+		for (Iterator<?> ite = myGraph.vertices(); ite.hasNext(); index++) {
+			Vertex vertex = (Vertex) ite.next();
 			if (vertex.getName().toString().equals(theVertexName)) {
 				return index;
 			}
@@ -86,7 +116,7 @@ public class FordFulkerson {
 			visited[j] = false;
 
 		visited[0] = true;
-		return dfsOnGraph((Vertex)myGraph.vertexList.getFirst(), visited);
+		return dfsOnGraph((Vertex) myGraph.vertexList.getFirst(), visited);
 	}
 
 	/**
@@ -114,8 +144,8 @@ public class FordFulkerson {
 	 *         Otherwise, return -1.
 	 */
 	private int findEdgeIndex(Vertex theStartVertex, Vertex theEndVertex) {
-		for (Iterator<Edge> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
-			Edge edge = ite.next();
+		for (Iterator<?> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
+			Edge edge = (Edge) ite.next();
 			if (edge.getSecondEndpoint() == theEndVertex)
 				return myGraph.edgeList.indexOf(edge);
 		}
@@ -148,8 +178,8 @@ public class FordFulkerson {
 				System.out.println(st);
 			}
 
-			for (Iterator<Edge> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
-				Edge edge = ite.next();
+			for (Iterator<?> ite = myGraph.incidentEdges(theStartVertex); ite.hasNext();) {
+				Edge edge = (Edge) ite.next();
 				Vertex vertex = edge.getSecondEndpoint();
 
 				if (this.myDebugMode)
@@ -202,15 +232,7 @@ public class FordFulkerson {
 				edge.setData((Double) edge.getData() - bottleNeckValue);
 
 				// update the backward flow
-				if (currentVertex.getName().toString() == "t" && previousVertex.getName().toString() == "v") {
-					int sss = 1;
-					
-				}
-				
 				edgeIndex = findEdgeIndex(currentVertex, previousVertex);
-				if (edgeIndex == -1) {
-					int kkk = 1;
-				}
 				edge = (Edge) myGraph.edgeList.get(edgeIndex);
 				edge.setData((Double) edge.getData() + bottleNeckValue);
 			}

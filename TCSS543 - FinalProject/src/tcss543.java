@@ -31,7 +31,7 @@ public class tcss543 {
 	 */
     public static void runAlgorithms(String theInputFileName)  {
     	
-        int NUMBER_OF_RUNNINGS = 5; //<<===== <<===== <<=====
+        int NUMBER_OF_RUNNINGS = 1; //<<===== <<===== <<=====
         
         //Ford-Fulkerson
         double fordFulkersonMaxflow = 0.0;
@@ -53,7 +53,7 @@ public class tcss543 {
         //Capability Scaling
         double capabilityScalingMaxFlow = 0.0;
         totalRunningTime = 0;      
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < NUMBER_OF_RUNNINGS; i++) {
 			SimpleGraph graph = new SimpleGraph();
 			GraphInput.LoadSimpleGraph(graph, theInputFileName);
 			
@@ -65,9 +65,27 @@ public class tcss543 {
             totalRunningTime += (endTime - startTime) / 1000000;
         }
         System.out.println("Scaling Ford Fulkerson took: " + totalRunningTime + " ms");
-           
+
+        
+        //Preflow Push
+        double preflowPushMaxFlow = 0.0;
+//        totalRunningTime = 0;      
+//        for (int i = 0; i < NUMBER_OF_RUNNINGS; i++) {
+//			SimpleGraph graph = new SimpleGraph();
+//			graph = GraphInput.LoadSimpleGraph(graph, theInputFileName);
+//			
+//			PreflowPush preflow = new PreflowPush(graph);
+//            
+//            long startTime = System.nanoTime();
+//            preflowPushMaxFlow = preflow.runPreflow();
+//            long endTime = System.nanoTime();
+//            totalRunningTime += (endTime - startTime) / 1000000;
+//        }
+//        System.out.println("Preflow Push took: " + totalRunningTime + " ms");        
+        
         System.out.println("");
         System.out.println("Ford-Fulkerson Maximum Flow: " + fordFulkersonMaxflow);
         System.out.println("Scaling Ford-Fulkerson Maximum Flow: " + capabilityScalingMaxFlow);
+        System.out.println("Preflow Push Maximum Flow: " + preflowPushMaxFlow);
     }
 }
