@@ -16,7 +16,7 @@ public class FordFulkerson {
 	/** The name of the sink vertex. t by default*/
 	private String mySinkVertexName = "t";
 	/** Debug mode. */
-	private boolean myDebugMode = false; // true of false
+	private boolean myDebugMode = true; // true of false
 	
 	
 	/**
@@ -49,9 +49,9 @@ public class FordFulkerson {
 			maxFlow += bottleNeckValue; // set bottleneckEdge in find path
 
 			if (this.myDebugMode) {
-				String st = getAugmentingPath(this.myGraph.vertexList.get(mySinkVertexIndex));
+				Vertex sink = (Vertex) this.myGraph.vertexList.get(mySinkVertexIndex);
+				String st = getAugmentingPath(sink);
 				st = st + " (bottle neck = " + bottleNeckValue.toString() + ") => Max flow = " + maxFlow;
-				;
 				System.out.println(st);
 			}
 		}
@@ -86,7 +86,7 @@ public class FordFulkerson {
 			visited[j] = false;
 
 		visited[0] = true;
-		return dfsOnGraph(myGraph.vertexList.getFirst(), visited);
+		return dfsOnGraph((Vertex)myGraph.vertexList.getFirst(), visited);
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class FordFulkerson {
 	 */
 	private double updateGraph() {
 		Vertex previousVertex;
-		Vertex currentVertex = myGraph.vertexList.get(mySinkVertexIndex);
+		Vertex currentVertex = (Vertex) myGraph.vertexList.get(mySinkVertexIndex);
 		Double bottleNeckValue = Double.MAX_VALUE;
 		int edgeIndex;
 
@@ -185,25 +185,33 @@ public class FordFulkerson {
 			previousVertex = (Vertex) currentVertex.getData();
 			if (previousVertex != null) {
 				edgeIndex = findEdgeIndex(previousVertex, currentVertex);
-				Edge edge = myGraph.edgeList.get(edgeIndex);
+				Edge edge = (Edge) myGraph.edgeList.get(edgeIndex);
 				bottleNeckValue = Math.min((double) bottleNeckValue, (double) edge.getData());
 			}
 			currentVertex = previousVertex;
 		}
 
 		// update all edges of the augmenting path.
-		currentVertex = myGraph.vertexList.get(mySinkVertexIndex);
+		currentVertex = (Vertex) myGraph.vertexList.get(mySinkVertexIndex);
 		while (currentVertex != null) {
 			previousVertex = (Vertex) currentVertex.getData();
 			if (previousVertex != null) {
 				// update the forward flow
 				edgeIndex = findEdgeIndex(previousVertex, currentVertex);
-				Edge edge = myGraph.edgeList.get(edgeIndex);
+				Edge edge = (Edge) myGraph.edgeList.get(edgeIndex);
 				edge.setData((Double) edge.getData() - bottleNeckValue);
 
 				// update the backward flow
+				if (currentVertex.getName().toString() == "t" && previousVertex.getName().toString() == "v") {
+					int sss = 1;
+					
+				}
+				
 				edgeIndex = findEdgeIndex(currentVertex, previousVertex);
-				edge = myGraph.edgeList.get(edgeIndex);
+				if (edgeIndex == -1) {
+					int kkk = 1;
+				}
+				edge = (Edge) myGraph.edgeList.get(edgeIndex);
 				edge.setData((Double) edge.getData() + bottleNeckValue);
 			}
 			currentVertex = previousVertex;

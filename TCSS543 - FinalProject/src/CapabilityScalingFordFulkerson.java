@@ -51,7 +51,8 @@ public class CapabilityScalingFordFulkerson {
 				maxFlow += bottleNeckValue; // set bottleneckEdge in find path
 
 				if (this.myDebugMode) {
-					String st = getAugmentingPath(this.myGraph.vertexList.get(mySinkVertexIndex));
+					Vertex sink = (Vertex) this.myGraph.vertexList.get(mySinkVertexIndex);
+					String st = getAugmentingPath(sink);
 					st = st + " (bottle neck = " + Double.toString(bottleNeckValue) + ") => Max flow = " + maxFlow;
 					;
 					System.out.println(st);
@@ -91,7 +92,7 @@ public class CapabilityScalingFordFulkerson {
 			visited[j] = false;
 
 		visited[0] = true;
-		return dfsOnGraph(myGraph.vertexList.getFirst(), visited, theDeltaValue);
+		return dfsOnGraph((Vertex)myGraph.vertexList.getFirst(), visited, theDeltaValue);
 	}
 
 	/**
@@ -135,7 +136,7 @@ public class CapabilityScalingFordFulkerson {
 	private int getDelta() {
 		double maxCapacity = Double.MIN_VALUE;
 		int sourceVertexIndex = findVertexIndexByName(this.mySourceVertexName);
-		Vertex sourceVertex = this.myGraph.vertexList.get(sourceVertexIndex);
+		Vertex sourceVertex = (Vertex) this.myGraph.vertexList.get(sourceVertexIndex);
 		
 		if (myDebugMode)
 			System.out.println("Delta:"); 
@@ -195,7 +196,7 @@ public class CapabilityScalingFordFulkerson {
 	 */
 	private double updateGraph() {
 		Vertex previousVertex;
-		Vertex currentVertex = myGraph.vertexList.get(mySinkVertexIndex);
+		Vertex currentVertex = (Vertex) myGraph.vertexList.get(mySinkVertexIndex);
 		Double bottleNeckValue = Double.MAX_VALUE;
 		int edgeIndex;
 
@@ -204,25 +205,25 @@ public class CapabilityScalingFordFulkerson {
 			previousVertex = (Vertex) currentVertex.getData();
 			if (previousVertex != null) {
 				edgeIndex = findEdgeIndex(previousVertex, currentVertex);
-				Edge edge = myGraph.edgeList.get(edgeIndex);
+				Edge edge = (Edge) myGraph.edgeList.get(edgeIndex);
 				bottleNeckValue = Math.min((double) bottleNeckValue, (double) edge.getData());
 			}
 			currentVertex = previousVertex;
 		}
 
 		// update all edges of the augmenting path.
-		currentVertex = myGraph.vertexList.get(mySinkVertexIndex);
+		currentVertex = (Vertex) myGraph.vertexList.get(mySinkVertexIndex);
 		while (currentVertex != null) {
 			previousVertex = (Vertex) currentVertex.getData();
 			if (previousVertex != null) {
 				// update the forward flow
 				edgeIndex = findEdgeIndex(previousVertex, currentVertex);
-				Edge edge = myGraph.edgeList.get(edgeIndex);
+				Edge edge = (Edge) myGraph.edgeList.get(edgeIndex);
 				edge.setData((Double) edge.getData() - bottleNeckValue);
 
 				// update the backward flow
 				edgeIndex = findEdgeIndex(currentVertex, previousVertex);
-				edge = myGraph.edgeList.get(edgeIndex);
+				edge = (Edge) myGraph.edgeList.get(edgeIndex);
 				edge.setData((Double) edge.getData() + bottleNeckValue);
 			}
 			currentVertex = previousVertex;

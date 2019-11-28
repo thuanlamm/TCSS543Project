@@ -7,24 +7,24 @@
 /**
  * Class that represents an edge in a graph.
  * An object (usually some sort of data) can be associated with the edge.
- *
+ * 
  * A label (also represented by an object (e.g., a string) can also be
  * associated with an edge.  This could be useful, for example, if you
  * need to mark an edge as being visited in some graph traversal.
- *
+ * 
  * @author edhong
  * @version 0.0
  */
 public class Edge {
     /** the first endpoint of the edge */
     private Vertex v1;
-
+    
     /** the second endpoint of the edge */
     private Vertex v2;
-
+    
     private Object data;  // an object associated with this edge
     private Object name;  // a name associated with this edge
-
+    
     /**
      * Constructor that allows data and a name to be associated
      * with the edge.
@@ -63,7 +63,7 @@ public class Edge {
     public Object getData() {
         return this.data;
     }
-
+        
     /**
      * Set the data associated with this edge.
      * @param data  the data of this edge
@@ -71,7 +71,7 @@ public class Edge {
     public void setData(Object data) {
         this.data = data;
     }
-
+    
     /**
      * Return the name associated with this edge.
      * @return  the name of this edge
@@ -79,8 +79,5 @@ public class Edge {
     public Object getName() {
         return this.name;
     }
-
-    public void setName(Object data) {
-        this.name=data;
-    }
+    
 }

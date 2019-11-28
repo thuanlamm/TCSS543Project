@@ -38,7 +38,7 @@ public class tcss543 {
         long totalRunningTime = 0;
         for (int i = 0; i < NUMBER_OF_RUNNINGS; i++) {
 			SimpleGraph graph = new SimpleGraph();
-			graph = GraphInput.LoadSimpleGraph(graph, theInputFileName);
+			GraphInput.LoadSimpleGraph(graph, theInputFileName);
      			
             FordFulkerson fordFulkerson = new FordFulkerson(graph);
 
@@ -55,7 +55,7 @@ public class tcss543 {
         totalRunningTime = 0;      
         for (int i = 0; i < 1; i++) {
 			SimpleGraph graph = new SimpleGraph();
-			graph = GraphInput.LoadSimpleGraph(graph, theInputFileName);
+			GraphInput.LoadSimpleGraph(graph, theInputFileName);
 			
             CapabilityScalingFordFulkerson capabilityScaling = new CapabilityScalingFordFulkerson(graph);
             
